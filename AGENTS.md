@@ -19,7 +19,7 @@
 | Check | Command | Notes |
 |---|---|---|
 | Install (server) | `go mod download` | Install PostgreSQL 18 separately, for example `brew install postgresql@18` |
-| Install (client) | `npm ci` | Node 26 LTS |
+| Install (client) | `npm ci --ignore-scripts` | Node 26 LTS; `--ignore-scripts` per SC-091 |
 | Build (client) | `npm run build` | Runs `vite build`; output is embedded into the Go binary (PROPOSED) |
 | Build (server) | `go build ./...` | |
 | Type-check (server) | `go vet ./...` | The compiler type-checks during the build |
@@ -27,7 +27,8 @@
 | Test (server) | `go test -race ./...` | |
 | Test (client) | `npx vitest run` | |
 | Audit (server) | `govulncheck ./...` | Install with `go install golang.org/x/vuln/cmd/govulncheck@latest` |
-| Audit (client) | `npm audit --omit=dev` | |
+| Audit (client) | `npm audit --omit=dev` and `npm audit signatures` | Signatures check per SC-091 |
+| Verify (server) | `go mod verify` | Per SC-091 |
 | Lint | `go vet ./...` (server); client N/A | Client N/A because `tsc --noEmit` and React's default escaping cover the required checks |
 
 Pinned versions of PROPOSED Go and npm packages and the MITRE ATT&CK bundle version are TO BE DECIDED.
@@ -46,4 +47,10 @@ Pinned versions of PROPOSED Go and npm packages and the MITRE ATT&CK bundle vers
 - Keep updates scoped to the task. Use the project's package manager to resolve transitive dependencies; avoid unrelated upgrades, forced overrides, and manual lockfile edits that bypass compatibility constraints. Prefer a compatible parent-library update when a transitive dependency needs remediation.
 - Before updating, review release notes, migration guidance, and dependency constraints for breaking changes. Explain concrete effects on this project and the required migration work. If an update requires a broader migration or hits a compatibility blocker, stop and report the evidence and options before expanding scope. Do not repeatedly attempt speculative upgrades or fixes; resume only with new evidence or an agreed migration plan.
 - If you cannot verify these requirements, stop and report the blocker. Do not add or upgrade the dependency unless the user explicitly accepts the identified risk.
+
+### Project application
+
 - Only packages marked `CONFIRMED` in `ARCHITECTURE.md` are already approved; everything else goes through this policy.
+- A `PROPOSED` package in the `ARCHITECTURE.md` Stack table may be added once it passes this policy and `SC-091`/`SC-092`; record the pinned version in `ARCHITECTURE.md` in the same pull request.
+- A package outside the `ARCHITECTURE.md` Stack table needs a new decision recorded there before it's added (`SC-091`).
+- The advisory check above is satisfied by passing the audit commands in the Commands table plus a live advisory lookup; report sources and date in the pull request.
