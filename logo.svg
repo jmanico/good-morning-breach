@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="t">
+  <title id="t">Good Morning Breach</title>
+  <rect width="64" height="64" rx="12" fill="#1D1A3B"/>
+  <path d="M8 44 A24 24 0 0 1 56 44" fill="none" stroke="#EFEEF5" stroke-width="4" stroke-dasharray="9 4"/>
+  <path d="M16 44 A16 16 0 0 1 48 44" fill="none" stroke="#EFEEF5" stroke-width="4"/>
+  <path d="M22 44 A10 10 0 0 1 42 44 Z" fill="#F4B740"/>
+  <path d="M33 31 L29 38 L34 39 L30 47 L36 38 L31 37 L35 31 Z" fill="#1D1A3B"/>
+  <path d="M6 44 H28 M36 44 H58" stroke="#EFEEF5" stroke-width="4" stroke-linecap="square"/></svg>

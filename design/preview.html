@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Good Morning Breach design preview</title>
+<style>
+:root{
+  --primary:#2E2A8C;--primary-hover:#1F1C66;--on-primary:#fff;--neutral:#EFEEF5;--surface:#fff;
+  --ink:#1D1A3B;--muted:#4E4A6B;--outline:#7C7898;--hairline:#D9D7E5;--selected:#E3E1F2;--dawn:#F4B740;
+  --critical:#A3142E;--high:#A8420A;--medium:#7A5B00;--low:#2C6A47;--info:#4B5574;
+  --error-c:#FBE9EC;--warn-c:#FFF1CC;--success:#2C6A47;
+  --font:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Atkinson Hyperlegible Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--neutral);color:var(--ink);font:400 16px/1.5 var(--font);overflow-wrap:anywhere}
+a{color:var(--primary);text-underline-offset:2px}
+a:hover{color:var(--primary-hover)}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.id{font-family:var(--mono);font-size:14px;font-weight:500}
+h1,h2,h3{margin:0;line-height:1.2}
+.h-lg{font-size:32px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+.h-md{font-size:24px;font-weight:700}
+.h-sm{font-size:19px;font-weight:700;line-height:1.3}
+.muted{color:var(--muted)}
+.small{font-size:14px;line-height:1.45}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* account bar */
+.bar{background:var(--ink);color:#fff;min-height:56px;display:flex;align-items:center;gap:16px;padding:8px 16px;flex-wrap:wrap}
+.bar .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;margin-right:auto}
+.bar nav{display:flex;gap:4px}
+@media (max-width:640px){.bar nav{order:3;width:100%}.bar .brand{font-size:15px}}
+.bar nav a{color:#fff;text-decoration:none;padding:10px 10px;border-radius:6px;font-weight:700;font-size:14px}
+.bar nav a[aria-current]{background:#3A3666}
+.bar nav a:focus-visible,.bar .who button:focus-visible{outline-color:var(--dawn)}
+.who{display:flex;align-items:center;gap:10px;font-size:14px}
+.role{border:1px solid #fff;border-radius:3px;padding:2px 6px;font-weight:700;font-size:13px}
+.who button{background:transparent;color:#fff;border:1px solid #fff;border-radius:6px;min-height:40px;padding:0 12px;font:700 14px var(--font)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:6px;font:700 14px/1.2 var(--font);border:2px solid transparent;cursor:pointer}
+.btn-p{background:var(--primary);color:#fff}.btn-p.hover{background:var(--primary-hover)}
+.btn-s{background:#fff;color:var(--primary);border-color:var(--outline)}
+.btn-d{background:var(--critical);color:#fff}
+.btn[disabled]{background:#fff;color:var(--muted);border-color:var(--outline);cursor:not-allowed}
+.btn.focus{outline:3px solid var(--ink);outline-offset:2px}
+
+/* inputs */
+.field{display:grid;gap:6px;max-width:340px}
+.field label{font-weight:700;font-size:14px}
+.input{min-height:44px;border:1px solid var(--outline);border-radius:3px;padding:0 12px;font:16px var(--font);color:var(--ink);background:#fff;width:100%}
+.input.err{border:2px solid var(--critical);background:var(--error-c)}
+.help{font-size:14px;color:var(--muted)}
+.errmsg{font-size:14px;color:var(--critical);font-weight:700}
+
+/* chips */
+.risk{display:inline-block;color:#fff;font-weight:700;font-size:13px;line-height:1.2;padding:3px 7px;border-radius:3px;white-space:nowrap}
+.r-critical{background:var(--critical)}.r-high{background:var(--high)}.r-medium{background:var(--medium)}.r-low{background:var(--low)}.r-info{background:var(--info)}
+.tag{display:inline-flex;align-items:center;gap:6px;background:var(--selected);color:var(--ink);border-radius:999px;padding:3px 10px;font-size:13px;font-weight:700;text-decoration:none;line-height:1.3}
+a.tag{color:var(--ink)}
+a.tag:hover{text-decoration:underline}
+.tag .id{font-size:13px}
+.tag.active{background:var(--primary);color:#fff}
+.tag.active button{background:none;border:0;color:#fff;font:700 15px var(--font);padding:0 2px;cursor:pointer;min-width:24px;min-height:24px}
+
+/* ledger */
+.ledger{list-style:none;margin:0;padding:0;background:#fff;border-top:1px solid var(--hairline)}
+.story{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;padding:16px 16px 16px 0;border-bottom:1px solid var(--hairline);position:relative}
+.story::before{content:"";grid-row:1 / span 6;align-self:stretch;width:var(--spine);background:var(--c)}
+.story>*{grid-column:2}
+.s-critical{--c:var(--critical);--spine:8px}.s-high{--c:var(--high);--spine:6px}.s-medium{--c:var(--medium);--spine:4px}.s-low{--c:var(--low);--spine:3px}.s-info{--c:var(--info);--spine:2px}
+.story .top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.story h3{font-size:18px;font-weight:600;line-height:1.35}
+.story h3 a{color:var(--ink);text-decoration:none}
+.story h3 a:hover{text-decoration:underline;color:var(--primary)}
+.domain{font-size:14px;color:var(--muted);font-weight:400}
+.meta{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:14px;color:var(--muted);margin:0}
+.meta div{display:flex;gap:5px}.meta dt{font-weight:700}.meta dd{margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.summary{margin:4px 0 0;max-width:68ch}
+.lic{font-size:13px;color:var(--muted);margin:2px 0 0}
+.related summary{cursor:pointer;color:var(--primary);font-weight:700;font-size:14px;min-height:32px;display:flex;align-items:center}
+.related ul{margin:4px 0 0;padding-left:18px;font-size:14px}
+
+/* layout */
+.wrap{max-width:1180px;margin:0 auto;padding:24px 16px 40px}
+.dash{display:grid;gap:24px}
+@media (min-width:1024px){.dash{grid-template-columns:minmax(0,760px) 280px;column-gap:40px;justify-content:center}}
+.morning{display:grid;gap:12px;margin-bottom:16px}
+.counts{display:flex;gap:2px;height:28px}
+.counts span{display:flex;align-items:center;padding:0 8px;color:#fff;font-size:13px;font-weight:700;white-space:nowrap;min-width:max-content}
+.filters{background:#fff;padding:12px 16px;margin-bottom:16px;border:1px solid var(--hairline)}
+.filters summary{font-weight:700;cursor:pointer;min-height:32px;display:flex;align-items:center}
+.frow{display:grid;gap:12px;margin-top:12px;grid-template-columns:1fr}
+@media (min-width:640px){.frow{grid-template-columns:1.6fr 1.2fr 1.3fr 1.1fr}}
+.frow .field{max-width:none}
+.select{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231D1A3B' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 12px center}
+.active-filters{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;align-items:center}
+.rail{display:grid;gap:16px;align-content:start}
+.panel{background:#fff;border:1px solid var(--hairline);padding:16px}
+.panel h2{font-size:19px;margin-bottom:8px}
+.panel h3{font-size:14px;font-weight:700;margin:12px 0 4px}
+.panel ul{margin:0;padding:0;list-style:none;font-size:14px}
+.panel li{padding:6px 0;border-bottom:1px solid var(--hairline)}
+.panel li:last-child{border:0}
+.warn{background:var(--warn-c);border-left:6px solid var(--medium);padding:12px 16px;font-size:15px}
+.warn strong{display:block}
+footer.notices{margin-top:32px;padding-top:16px;border-top:1px solid var(--hairline);font-size:13px;color:var(--muted);display:grid;gap:6px;max-width:760px}
+footer.notices p{margin:0}
+
+/* spec sections */
+.spec{max-width:1180px;margin:0 auto;padding:40px 16px;display:grid;gap:48px}
+.spec>section{display:grid;gap:16px}
+.spec h2{font-size:24px}
+.row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.sw div{background:#fff;border:1px solid var(--hairline);font-size:13px}
+.sw i{display:block;height:56px;border-bottom:1px solid var(--hairline)}
+.sw b,.sw span{display:block;padding:0 10px}.sw b{padding-top:8px}.sw span{padding-bottom:8px;color:var(--muted)}
+.scale p{margin:0 0 8px}
+.state{display:grid;gap:6px;justify-items:start}
+.state small{color:var(--muted);font-size:13px}
+.dialog{background:#fff;max-width:440px;padding:24px;box-shadow:0 8px 24px rgba(29,26,59,.28);display:grid;gap:14px}
+.scrim{background:rgba(29,26,59,.6);padding:32px 16px;display:flex;justify-content:center}
+.signin{background:#fff;max-width:380px;padding:24px;display:grid;gap:14px;border-top:6px solid var(--ink)}
+.alertbox{background:var(--error-c);border-left:6px solid var(--critical);padding:10px 12px;font-size:15px}
+.empty{background:#fff;padding:24px;border:1px solid var(--hairline);max-width:560px}
+.sample{margin:0;background:var(--ink);color:#fff;font-size:14px;padding:8px 16px;text-align:center}
+.sample a{color:#fff}
+.mark16{width:16px;height:16px}.mark32{width:32px;height:32px}.mark128{width:128px;height:128px}
+.check{display:flex;gap:10px;align-items:center;min-height:44px;font-weight:700;font-size:14px}
+.check input{width:20px;height:20px;accent-color:var(--primary)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 64 64">
+    <rect width="64" height="64" rx="12" fill="#1D1A3B"/>
+    <path d="M8 44 A24 24 0 0 1 56 44" fill="none" stroke="#EFEEF5" stroke-width="4" stroke-dasharray="9 4"/>
+    <path d="M16 44 A16 16 0 0 1 48 44" fill="none" stroke="#EFEEF5" stroke-width="4"/>
+    <path d="M22 44 A10 10 0 0 1 42 44 Z" fill="#F4B740"/>
+    <path d="M33 31 L29 38 L34 39 L30 47 L36 38 L31 37 L35 31 Z" fill="#1D1A3B"/>
+    <path d="M6 44 H28 M36 44 H58" stroke="#EFEEF5" stroke-width="4" stroke-linecap="square"/>
+  </symbol>
+</svg>
+
+<p class="sample">Design preview. Stories, CVE numbers and accounts below are illustrative samples, not real events.</p>
+
+<!-- ============ MAIN SCREEN: DASHBOARD ============ -->
+<header class="bar">
+  <span class="brand"><svg width="32" height="32" style="outline:1px solid #6E6A92;border-radius:7px" aria-hidden="true"><use href="#mark"/></svg>Good Morning Breach</span>
+  <nav aria-label="Main">
+    <a href="#dash" aria-current="page">Stories</a>
+    <a href="#settings">Alert settings</a>
+    <a href="#admin">Admin</a>
+  </nav>
+  <div class="who"><span><span class="sr">Signed in as </span><strong>jo@example.org</strong></span><span class="role">Admin</span><button type="button">Sign out</button></div>
+</header>
+
+<main class="wrap" id="dash">
+  <div class="dash">
+    <div>
+      <div class="morning">
+        <h1 class="h-lg">This morning, Friday 13 November</h1>
+        <p class="muted small" style="margin:0">23 stories in the last 24 hours, highest risk first.</p>
+        <div class="counts" role="img" aria-label="2 Critical, 4 High, 9 Medium, 5 Low, 3 Informational">
+          <span class="r-critical" style="flex:2">2 Critical</span>
+          <span class="r-high" style="flex:4">4 High</span>
+          <span class="r-medium" style="flex:9">9 Medium</span>
+          <span class="r-low" style="flex:5">5 Low</span>
+          <span class="r-info" style="flex:3">3 Info</span>
+        </div>
+      </div>
+
+      <form class="filters" role="search" action="#">
+        <details>
+          <summary>Filter stories (2 active)</summary>
+          <div class="frow">
+            <div class="field"><label for="q">Search titles and summaries</label><input class="input" id="q" type="search" value="ransomware"></div>
+            <div class="field"><label for="cat">Category</label><select class="input select" id="cat"><option>All categories</option><option>Exploited Vulnerability</option><option>Ransomware</option></select></div>
+            <div class="field"><label for="risk">Risk</label><select class="input select" id="risk"><option>Medium and above</option><option>Critical only</option></select></div>
+            <div class="field"><label for="src">Source</label><select class="input select" id="src"><option>All sources</option><option>CISA KEV catalog</option></select></div>
+          </div>
+        </details>
+          <div class="active-filters"><span class="small muted">Active:</span>
+            <span class="tag active">Risk: Medium and above <button type="button" aria-label="Remove filter Risk: Medium and above">×</button></span>
+            <span class="tag active">Last 24 hours <button type="button" aria-label="Remove filter Last 24 hours">×</button></span>
+          </div>
+      </form>
+
+      <ol class="ledger" aria-label="Stories, highest risk first">
+        <li class="story s-critical">
+          <div class="top"><span class="risk r-critical">Critical</span><h3><a href="#">Edge VPN appliance flaw added to the Known Exploited Vulnerabilities catalog</a></h3></div>
+          <span class="domain">cisa.gov</span>
+          <dl class="meta"><div><dt>Sources</dt><dd>CISA KEV catalog, NVD, Cloudflare Zero Wire</dd></div><div><dt>Published</dt><dd>06:12</dd></div><div><dt>Tone</dt><dd>Negative</dd></div></dl>
+          <div class="tags">
+            <span class="tag">Exploited Vulnerability</span>
+            <a class="tag" href="#"><span class="id">T1190</span> Exploit Public-Facing Application, Initial Access</a>
+            <span class="tag"><span class="id">CVE-2026-10001</span></span>
+            <span class="tag">Zero Wire: Patch</span>
+          </div>
+          <p class="summary">Unauthenticated remote code execution in an SSL VPN web portal. Active exploitation reported; federal agencies have a remediation due date.</p>
+          <details class="related"><summary>Related: 2 stories name CVE-2026-10001</summary>
+            <ul><li><a href="#">SANS ISC diary: scans for the VPN portal path rise overnight</a></li><li><a href="#">GitHub Advisory: proof-of-concept repository published</a></li></ul></details>
+        </li>
+        <li class="story s-critical">
+          <div class="top"><span class="risk r-critical">Critical</span><h3><a href="#">Ransomware group encrypts regional hospital network after phishing access</a></h3></div>
+          <span class="domain">ic3.gov</span>
+          <dl class="meta"><div><dt>Sources</dt><dd>FBI IC3, CERT-EU</dd></div><div><dt>Published</dt><dd>04:40</dd></div><div><dt>Tone</dt><dd>Negative</dd></div></dl>
+          <div class="tags">
+            <span class="tag">Ransomware</span><span class="tag">Phishing and Social Engineering</span>
+            <a class="tag" href="#"><span class="id">T1566.002</span> Spearphishing Link, Initial Access</a>
+            <a class="tag" href="#"><span class="id">T1486</span> Data Encrypted for Impact, Impact</a>
+          </div>
+          <p class="summary">Joint advisory lists indicators and recommends offline backups and phishing-resistant MFA.</p>
+        </li>
+        <li class="story s-high">
+          <div class="top"><span class="risk r-high">High</span><h3><a href="#">Malicious versions of a popular npm build package published for six hours</a></h3></div>
+          <span class="domain">github.com</span>
+          <dl class="meta"><div><dt>Source</dt><dd>GitHub Advisory Database</dd></div><div><dt>Published</dt><dd>Yesterday 22:05</dd></div><div><dt>Tone</dt><dd>Negative</dd></div></dl>
+          <div class="tags"><span class="tag">Supply Chain</span><span class="tag">Malware</span>
+            <a class="tag" href="#"><span class="id">T1195.002</span> Compromise Software Supply Chain, Initial Access</a></div>
+          <p class="summary">Affected versions steal CI tokens. Pin to the last clean version and rotate secrets.</p>
+        </li>
+        <li class="story s-medium">
+          <div class="top"><span class="risk r-medium">Medium</span><h3><a href="#">Securelist: new loader spreads through fake browser updates</a></h3></div>
+          <span class="domain">securelist.com</span>
+          <dl class="meta"><div><dt>Source</dt><dd>Kaspersky Securelist</dd></div><div><dt>Published</dt><dd>Yesterday 15:30</dd></div><div><dt>Tone</dt><dd>Negative</dd></div></dl>
+          <div class="tags"><span class="tag">Malware</span></div>
+          <p class="summary">“The loader is delivered as a fake browser update on compromised websites.”</p>
+          <p class="lic">Verbatim excerpt. No summary permitted by source licence.</p>
+        </li>
+        <li class="story s-medium">
+          <div class="top"><span class="risk r-medium">Medium</span><h3><a href="#">Hosting provider breach adds 1.2 million accounts</a></h3></div>
+          <span class="domain">haveibeenpwned.com</span>
+          <dl class="meta"><div><dt>Source</dt><dd>Have I Been Pwned</dd></div><div><dt>Published</dt><dd>Yesterday 11:02</dd></div><div><dt>Tone</dt><dd>Negative</dd></div></dl>
+          <div class="tags"><span class="tag">Data Breach</span></div>
+          <p class="lic">Breach data from <a href="#">Have I Been Pwned</a>.</p>
+        </li>
+        <li class="story s-info">
+          <div class="top"><span class="risk r-info">Informational</span><h3><a href="#">Reddit r/netsec: Writing a fuzzer for TLS session resumption</a></h3></div>
+          <span class="domain">reddit.com</span>
+          <dl class="meta"><div><dt>Source</dt><dd>r/netsec</dd></div><div><dt>Published</dt><dd>07:01</dd></div></dl>
+          <p class="lic">Headline and link only.</p>
+        </li>
+      </ol>
+    </div>
+
+    <aside class="rail" aria-label="Internet conditions and source health">
+      <div class="warn" role="status"><strong>CERT-FR has failed for 26 hours</strong>Last error: feed returned no valid items. <a href="#admin">Check sources</a></div>
+      <section class="panel">
+        <h2>Cloudflare Radar</h2>
+        <h3>Internet outages</h3>
+        <ul><li>Power outage, two regional networks, since 03:20</li><li>Cable cut, one country, resolved 05:45</li></ul>
+        <h3>Attack trends</h3>
+        <ul><li>Layer 7 DDoS share up overnight</li></ul>
+        <h3>BGP hijacks and route leaks</h3>
+        <ul><li>Possible hijack of one prefix, 02:14</li></ul>
+        <p class="lic">Data from Cloudflare Radar, CC BY-NC 4.0.</p>
+      </section>
+    </aside>
+  </div>
+
+  <footer class="notices">
+    <p>This product uses the NVD API but is not endorsed or certified by the NVD.</p>
+    <p>© 2026 The MITRE Corporation. This work is reproduced and distributed with the permission of The MITRE Corporation. <a href="#">ATT&amp;CK terms of use</a></p>
+    <p>Breach data from <a href="#">Have I Been Pwned</a>. SANS Internet Storm Center summaries are licensed CC BY-NC-SA 4.0.</p>
+  </footer>
+</main>
+
+<!-- ============ DESIGN SYSTEM ============ -->
+<div class="spec">
+  <section>
+    <h2>Logo</h2>
+    <div class="row">
+      <svg class="mark16" role="img" aria-label="Logo at 16 pixels"><use href="#mark"/></svg>
+      <svg class="mark32" role="img" aria-label="Logo at 32 pixels"><use href="#mark"/></svg>
+      <svg class="mark128" role="img" aria-label="Logo at 128 pixels"><use href="#mark"/></svg>
+    </div>
+  </section>
+
+  <section>
+    <h2>Palette</h2>
+    <div class="sw">
+      <div><i style="background:#2E2A8C"></i><b>Night indigo</b><span>#2E2A8C primary</span></div>
+      <div><i style="background:#1D1A3B"></i><b>Ink</b><span>#1D1A3B on-surface</span></div>
+      <div><i style="background:#4E4A6B"></i><b>Muted ink</b><span>#4E4A6B</span></div>
+      <div><i style="background:#EFEEF5"></i><b>First light</b><span>#EFEEF5 neutral</span></div>
+      <div><i style="background:#7C7898"></i><b>Outline</b><span>#7C7898</span></div>
+      <div><i style="background:#F4B740"></i><b>Dawn</b><span>#F4B740 logo only</span></div>
+      <div><i style="background:#A3142E"></i><b>Critical</b><span>#A3142E</span></div>
+      <div><i style="background:#A8420A"></i><b>High</b><span>#A8420A</span></div>
+      <div><i style="background:#7A5B00"></i><b>Medium</b><span>#7A5B00</span></div>
+      <div><i style="background:#2C6A47"></i><b>Low</b><span>#2C6A47</span></div>
+      <div><i style="background:#4B5574"></i><b>Informational</b><span>#4B5574</span></div>
+      <div><i style="background:#FFF1CC"></i><b>Warning container</b><span>#FFF1CC</span></div>
+    </div>
+  </section>
+
+  <section class="scale">
+    <h2>Type scale</h2>
+    <p class="h-lg">Headline large 32, This morning</p>
+    <p class="h-md">Headline medium 24, Alert settings</p>
+    <p class="h-sm">Headline small 19, Cloudflare Radar</p>
+    <p style="font-size:18px;font-weight:600">Story title 18, Ransomware group encrypts hospital network</p>
+    <p>Body 16. Stories from the last 24 hours, sorted by risk, highest first.</p>
+    <p class="small">Body small 14. Sources, publication time, tone.</p>
+    <p style="font-weight:700;font-size:13px">Label small 13, risk and tag chips</p>
+    <p><span class="id">Identifier 14, CVE-2026-10001 T1190 T1566.002</span></p>
+  </section>
+
+  <section>
+    <h2>Buttons</h2>
+    <div class="row">
+      <div class="state"><button class="btn btn-p" type="button">Save settings</button><small>Primary</small></div>
+      <div class="state"><button class="btn btn-p hover" type="button">Save settings</button><small>Hover</small></div>
+      <div class="state"><button class="btn btn-p focus" type="button">Save settings</button><small>Focus</small></div>
+      <div class="state"><button class="btn btn-p" type="button" aria-busy="true">Sending test…</button><small>Busy</small></div>
+      <div class="state"><button class="btn btn-s" type="button">Replace webhook</button><small>Secondary</small></div>
+      <div class="state"><button class="btn btn-d" type="button">Delete account</button><small>Destructive, in dialogs only</small></div>
+      <div class="state"><button class="btn" type="button" disabled>Remove admin role</button><small>Disabled: this is the last active admin</small></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Inputs</h2>
+    <div class="row" style="align-items:start">
+      <div class="field"><label for="i1">Alert time</label><input class="input" id="i1" value="07:00"><span class="help">In your time zone, Europe/London.</span></div>
+      <div class="field"><label for="i2">Slack incoming webhook</label><input class="input err" id="i2" value="https://example.org/hook" aria-invalid="true" aria-describedby="e2"><span class="errmsg" id="e2">Error: enter a Slack incoming webhook address. It starts with https://hooks.slack.com/.</span></div>
+      <div class="field"><span style="font-weight:700;font-size:14px">Slack webhook</span><span class="small"><span style="color:var(--success);font-weight:700">Slack webhook saved.</span> Test message sent 13 Nov 06:58.</span><button class="btn btn-s" type="button" style="justify-self:start">Replace webhook</button></div>
+    </div>
+    <div class="row">
+      <label class="check"><input type="checkbox" checked> Email</label>
+      <label class="check"><input type="checkbox"> Text message</label>
+      <label class="check"><input type="checkbox" checked> Slack</label>
+      <label class="check"><input type="checkbox" checked> Send my morning alert</label>
+    </div>
+  </section>
+
+  <section>
+    <h2>Chips and tags</h2>
+    <div class="row">
+      <span class="risk r-critical">Critical</span><span class="risk r-high">High</span><span class="risk r-medium">Medium</span><span class="risk r-low">Low</span><span class="risk r-info">Informational</span>
+    </div>
+    <div class="row">
+      <span class="tag">Nation-State Activity</span>
+      <a class="tag" href="#"><span class="id">T1498</span> Network Denial of Service, Impact</a>
+      <span class="tag active">Category: Ransomware <button type="button" aria-label="Remove filter Category: Ransomware">×</button></span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Story risk spines</h2>
+    <ol class="ledger">
+      <li class="story s-low"><div class="top"><span class="risk r-low">Low</span><h3><a href="#">EFF Deeplinks: court rules on device search at borders</a></h3></div><span class="domain">eff.org</span><dl class="meta"><div><dt>Source</dt><dd>EFF Deeplinks</dd></div><div><dt>Tone</dt><dd>Positive</dd></div></dl><div class="tags"><span class="tag">Policy and Regulation</span></div></li>
+      <li class="story s-info"><div class="top"><span class="risk r-info">Informational</span><h3><a href="#">FIRST EPSS scores updated</a></h3></div><span class="domain">first.org</span><dl class="meta"><div><dt>Source</dt><dd>FIRST EPSS</dd></div><div><dt>Tone</dt><dd>Neutral</dd></div></dl></li>
+    </ol>
+  </section>
+
+  <section id="settings">
+    <h2>Empty state</h2>
+    <div class="empty"><p class="h-sm" style="margin:0 0 6px">No new stories at or above Medium</p><p style="margin:0 0 12px">Nothing new since your alert at 07:00 yesterday. To see more, lower your minimum risk.</p><a class="btn btn-s" href="#settings">Change minimum risk</a></div>
+  </section>
+
+  <section>
+    <h2>Sign-in error</h2>
+    <form class="signin" action="#">
+      <span class="brand" style="display:flex;gap:10px;align-items:center;font-weight:700"><svg width="28" height="28" aria-hidden="true"><use href="#mark"/></svg>Good Morning Breach</span>
+      <div class="alertbox" role="alert"><strong>Email, password, or code is incorrect.</strong> Check all three and try again.</div>
+      <div class="field"><label for="s1">Email address</label><input class="input" id="s1" value="jo@example.org" autocomplete="username"></div>
+      <div class="field"><label for="s2">Password</label><input class="input" id="s2" type="password" value="xxxxxxxxxxxx" autocomplete="current-password"></div>
+      <div class="field"><label for="s3">Code from your authenticator app</label><input class="input id" id="s3" inputmode="numeric" autocomplete="one-time-code"></div>
+      <button class="btn btn-p" type="button">Sign in</button>
+      <a href="#" class="small">Reset password</a>
+    </form>
+  </section>
+
+  <section id="admin">
+    <h2>Confirm a destructive action</h2>
+    <div class="scrim">
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dt">
+        <h3 id="dt" class="h-sm">Delete sam@example.org?</h3>
+        <p style="margin:0">Their email address, phone number, and Slack webhook are deleted. This can't be undone.</p>
+        <div class="field"><label for="c1">Type sam@example.org to confirm</label><input class="input" id="c1"></div>
+        <div class="row"><button class="btn btn-s focus" type="button">Cancel</button><button class="btn btn-d" type="button">Delete account</button></div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>
