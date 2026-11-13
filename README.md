@@ -1,8 +1,10 @@
+<p align="center"><img src="logo.svg" width="96" height="96" alt="Good Morning Breach logo: a dawn sun over a broken horizon"></p>
+
 # Good Morning Breach
 
 A private, non-commercial morning cybersecurity news feed. Good Morning Breach collects security news from licensed open sources, categorizes and scores each story, tags it with MITRE ATT&CK techniques, and sends each user a morning alert. Logged-in users can also browse all stories on a dashboard.
 
-> **Status:** Requirements complete. See [REQUIREMENTS.md](REQUIREMENTS.md) for the full, numbered requirements. This README is a summary; if the two disagree, REQUIREMENTS.md wins.
+> **Status:** Requirements and design complete. See [REQUIREMENTS.md](REQUIREMENTS.md) for the full, numbered requirements and [DESIGN.md](DESIGN.md) for the design system. This README is a summary; if the two disagree, REQUIREMENTS.md wins.
 
 ## Goals
 
@@ -62,6 +64,21 @@ Each story is tagged with zero or more ATT&CK techniques (ID, name, tactic), eac
 ### Data Retention
 Stories are kept for 365 days. Alert delivery records are kept for 90 days.
 
+## Design
+
+The full design system is in [DESIGN.md](DESIGN.md). A static preview of the palette, type scale, components, and dashboard is in [design/preview.html](design/preview.html). Open the preview file locally in a browser.
+
+- **Look:** a pre-dawn palette, with night-indigo ink on a pale first-light background. The dawn amber appears only in the logo.
+- **Risk at a glance:** each story has a left risk spine. It gets thicker and darker as risk rises, from 8 px for Critical to 2 px for Informational. Risk always shows as a word, a colour, and a spine width together.
+- **Type:** Atkinson Hyperlegible Next, self-hosted. Atkinson Hyperlegible Mono is used only for CVE and ATT&CK IDs.
+- **Accessibility:** every colour pair meets WCAG 2.2 AA. Controls show a visible focus ring and have touch targets of at least 44 px.
+- **Security in the UI:**
+  - Signed-in state is always visible.
+  - Destructive actions need confirmation. Deleting an account means typing its email.
+  - Sign-in has one generic error, including for a locked account.
+  - Collected content is shown as plain text only.
+- **Logo:** [logo.svg](logo.svg) is a dawn sun over a broken horizon, split by a breach crack.
+
 ## Access Control
 
 This is a closed service. Every page needs a login, and there is no self sign-up.
@@ -78,6 +95,7 @@ This is a closed service. Every page needs a login, and there is no self sign-up
 
 - [x] Write requirements ([REQUIREMENTS.md](REQUIREMENTS.md))
 - [x] Research source licenses
+- [x] Design system, logo, and preview ([DESIGN.md](DESIGN.md))
 - [ ] Choose the tech stack and architecture
 - [ ] Build source ingestion, including license records and content rules
 - [ ] Add categorization and risk scoring
