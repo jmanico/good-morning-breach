@@ -133,7 +133,7 @@ flowchart LR
 | Check | Command | Notes |
 |---|---|---|
 | Install (server) | `go mod download` | PostgreSQL 18 is installed separately, for example with `brew install postgresql@18` |
-| Install (client) | `npm ci` | Uses Node 26 LTS |
+| Install (client) | `npm ci --ignore-scripts` | Uses Node 26 LTS; scripts disabled per SC-091 |
 | Build (client) | `npm run build` (runs `vite build`) | The output is embedded into the Go binary (PROPOSED) |
 | Build (server) | `go build ./...` | |
 | Type-check (server) | `go vet ./...` | The compiler type-checks during the build |
@@ -141,7 +141,8 @@ flowchart LR
 | Test (server) | `go test -race ./...` | |
 | Test (client) | `npx vitest run` | |
 | Dependency audit (server) | `govulncheck ./...` | Install it with `go install golang.org/x/vuln/cmd/govulncheck@latest` |
-| Dependency audit (client) | `npm audit --omit=dev` | |
+| Dependency audit (client) | `npm audit --omit=dev`; `npm audit signatures` | Signatures check per SC-091 |
+| Dependency verify (server) | `go mod verify` | Per SC-091 |
 | Lint | `go vet ./...` (server). Client: N/A, because `tsc --noEmit` and React's default escaping cover the required checks. | A separate linter is not required by the inputs *(delegated decision)* |
 
 ## Open Questions
